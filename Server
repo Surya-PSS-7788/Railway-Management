@@ -1,0 +1,84 @@
+ from flask import Flask, render_template, redirect, url_for, request, session, jsonify
+ import mysql.connector
+ app = Flask(__name__)
+ app.secret_key = 'your_secret_key'
+ # MySQLConfiguration
+ DB_HOST='localhost'
+ DB_USER='root'
+ DB_PASSWORD='Nayantra1234@'
+ DB_NAME='RAILWAAYY'
+ # Connect to MySQL
+ db = mysql.connector.connect(
+ host=DB_HOST,
+ user=DB_USER,
+
+password=DB_PASSWORD,
+ database=DB_NAME
+ )
+ cursor = db.cursor()
+ # Route for user login
+ @app.route('/login', methods=['GET', 'POST'])
+ def login():
+ if request.method == 'POST':
+ username = request.form['username']
+ password = request.form['password']
+ cursor.execute("SELECT id FROM users WHERE username = %s AND password
+ = %s", (username, password))
+ user = cursor.fetchone()
+ if user:
+ session['user_id'] = user[0]
+ return redirect(url_for('book_ticket'))
+ else:
+ return render_template('login.html', message='Invalid username or password')
+ return render_template('login.html')
+ @app.route('/book_ticket', methods=['GET', 'POST'])
+ def book_ticket():
+ if 'user_id' not in session:
+ return redirect(url_for('login'))
+ # Fetch available trains from the Trainss table
+ cursor.execute("SELECT * FROM Trainss")
+ available_trains = cursor.fetchall()
+ if request.method == 'POST':
+ user_id = session['user_id']
+ train_name = request.form['train_name']
+ passenger_name = request.form['passenger_name']
+ # Fetch arrival and departure stations based on selected train_name
+ cursor.execute("SELECT arrival_station_name, departure_station_name FROM
+ Trainss WHERE train_name = %s",
+ (train_name,))
+ stations = cursor.fetchone()
+ arrival_station = stations[0]
+ departure_station = stations[1]
+ 
+try:
+ # Insert booked ticket details into the BookedTickets table
+ cursor.execute(
+ "INSERT INTO BookedTickets (user_id, train_name, passenger_name,
+ departure_station, arrival_station) VALUES (%s, %s, %s, %s, %s)",
+ (user_id, train_name, passenger_name, departure_station, arrival_station))
+ db.commit()
+ return jsonify({'message': 'Ticket booked successfully!'})
+ except Exception as e:
+ db.rollback()
+ return jsonify({'error': str(e)}), 500
+ # Pass the available trains to the template for rendering
+ return render_template('book_ticket.html', available_trains=available_trains)
+ # Route for user signup
+ @app.route('/signup', methods=['GET', 'POST'])
+ def signup():
+ if request.method == 'POST':
+ username = request.form['username']
+ password = request.form['password']
+ try:
+ # Insert user details into the Users table
+ cursor.execute("INSERT INTO Users (username, password) VALUES (%s, %s)",
+ (username, password))
+ db.commit()
+ return redirect(url_for('login'))
+ except Exception as e:
+ db.rollback()
+ return render_template('signup.html', message='Error: {}'.format(e))
+ return render_template('signup.html')
+ @app.route('/')
+ def welcome():
+ return render_template('welcome.html')
