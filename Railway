@@ -1,0 +1,502 @@
+CREATE DATABASE RAILWAY4;
+USE RAILWAY4;
+
+CREATE TABLE User_Details (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    date_of_birth DATE,
+    address VARCHAR(255),
+    phone_number VARCHAR(20),
+    age INT
+);
+
+DESC User_Details;
+DELIMITER //
+
+CREATE TRIGGER calculate_age BEFORE INSERT ON User_Details
+FOR EACH ROW
+BEGIN
+    SET NEW.age = YEAR(CURDATE()) - YEAR(NEW.date_of_birth) - 
+                  (DATE_FORMAT(CURDATE(), '%m%d') < DATE_FORMAT(NEW.date_of_birth, '%m%d'));
+END;
+//
+
+DELIMITER ;
+
+INSERT INTO User_Details (username, password, email, full_name, date_of_birth, address, phone_number, age)
+VALUES 
+    ('ravi_kumar', 'pass123', 'ravi@example.com', 'Ravi Kumar', '1995-07-15', '123 Street, Mumbai, Maharashtra', '1234567890', 29),
+    ('neha_sharma', 'pass456', 'neha@example.com', 'Neha Sharma', '1988-11-22', '456 Avenue, Kolkata, West Bengal', '0987654321', 36),
+    ('mohan_singh', 'pass789', 'mohan@example.com', 'Mohan Singh', '1992-03-10', '789 Road, Chennai, Tamil Nadu', '5678901234', 32),
+    ('priya_gupta', 'pass321', 'priya@example.com', 'Priya Gupta', '1985-05-04', '101 Lane, New Delhi, Delhi', '3456789012', 39),
+    ('anil_yadav', 'pass654', 'anil@example.com', 'Anil Yadav', '1998-09-30', '246 Boulevard, Lucknow, Uttar Pradesh', '6543210987', 26),
+    ('komal_patel', 'pass987', 'komal@example.com', 'Komal Patel', '1980-08-20', '369 Place, Pune, Maharashtra', '2109876543', 41),
+    ('suresh_shah', 'pass210', 'suresh@example.com', 'Suresh Shah', '1976-04-17', '808 Court, Jaipur, Rajasthan', '7890123456', 45),
+    ('divya_mishra', 'pass543', 'divya@example.com', 'Divya Mishra', '1990-01-25', '707 Lane, Howrah, West Bengal', '8901234567', 32),
+    ('anita_verma', 'pass876', 'anita@example.com', 'Anita Verma', '1983-12-05', '505 Street, Bengaluru, Karnataka', '9012345678', 38),
+    ('rahul_sharma', 'pass109', 'rahul@example.com', 'Rahul Sharma', '1995-11-08', '212 Avenue, Hyderabad, Telangana', '4321098765', 29),
+    ('deepak_singh', 'pass333', 'deepak@example.com', 'Deepak Singh', '1986-07-20', '123 Street, Ahmedabad, Gujarat', '1234567890', 38),
+    ('poonam_yadav', 'pass444', 'poonam@example.com', 'Poonam Yadav', '1991-02-15', '456 Avenue, Patna, Bihar', '0987654321', 33),
+    ('vikas_gupta', 'pass555', 'vikas@example.com', 'Vikas Gupta', '1984-06-10', '789 Road, Bhopal, Madhya Pradesh', '5678901234', 40),
+    ('sneha_mishra', 'pass666', 'sneha@example.com', 'Sneha Mishra', '1978-10-04', '101 Lane, Chandigarh, Punjab', '3456789012', 46),
+    ('rohit_patel', 'pass777', 'rohit@example.com', 'Rohit Patel', '1993-03-30', '246 Boulevard, Dehradun, Uttarakhand', '6543210987', 31),
+    ('anita_shah', 'pass888', 'anita@example.com', 'Anita Shah', '1989-09-20', '369 Place, Gangtok, Sikkim', '2109876543', 35),
+    ('sumit_kumar', 'pass999', 'sumit@example.com', 'Sumit Kumar', '1975-05-17', '808 Court, Guwahati, Assam', '7890123456', 47),
+    ('nisha_singh', 'pass000', 'nisha@example.com', 'Nisha Singh', '1997-11-25', '707 Lane, Gandhinagar, Gujarat', '8901234567', 27),
+    ('rajesh_verma', 'pass111', 'rajesh@example.com', 'Rajesh Verma', '1982-08-15', '505 Street, Ranchi, Jharkhand', '9012345678', 41),
+    ('anju_sharma', 'pass222', 'anju@example.com', 'Anju Sharma', '1996-06-08', '212 Avenue, Thiruvananthapuram, Kerala', '4321098765', 28);
+SELECT *FROM User_Details;
+
+CREATE TABLE Station_Details (
+    station_id INT PRIMARY KEY AUTO_INCREMENT,
+    station_code VARCHAR(255) NOT NULL,
+    station_name VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    station_type ENUM('Terminal', 'Junction', 'Suburban', 'Metro', 'Bus') NOT NULL
+) ;
+
+DROP TABLE Station_details;
+
+INSERT INTO Station_Details (station_id, station_code, station_name, city, state, station_type)
+VALUES 
+    (1001, 'CSMT', 'Chhatrapati Shivaji Maharaj Terminus', 'Mumbai', 'Maharashtra', 'Terminal'),
+    (1002, 'HWH','Howrah Junction', 'Kolkata', 'West Bengal', 'Junction'),
+    (1003, 'MAS','Chennai Central', 'Chennai', 'Tamil Nadu', 'Terminal'),
+    (1004, 'NDLS','New Delhi Railway Station', 'New Delhi', 'Delhi', 'Junction'),
+    (1005, 'LKO','Charbagh Railway Station', 'Lucknow', 'Uttar Pradesh', 'Junction'),
+    (1006, 'PUNE','Pune Junction', 'Pune', 'Maharashtra', 'Junction'),
+    (1007, 'JP','Jaipur Junction', 'Jaipur', 'Rajasthan', 'Junction'),
+    (1008, 'HWH','Howrah Metro Station', 'Kolkata', 'West Bengal', 'Metro'),
+    (1009, 'SBC','Bangalore City Railway Station', 'Bengaluru', 'Karnataka', 'Terminal'),
+    (1010, 'SC','Secunderabad Junction', 'Hyderabad', 'Telangana', 'Junction'),
+    (1011, 'GNC','Gandhinagar Railway Station', 'Gandhinagar', 'Gujarat', 'Junction'),
+    (1012, 'NDLS','Indira Gandhi International Airport', 'New Delhi', 'Delhi', 'Terminal'),
+    (1013, 'CSMT','Chhatrapati Shivaji International Airport', 'Mumbai', 'Maharashtra', 'Terminal'),
+    (1014, 'SBC','Kempegowda International Airport', 'Bengaluru', 'Karnataka', 'Terminal'),
+    (1015, 'SC','Rajiv Gandhi International Airport', 'Hyderabad', 'Telangana', 'Terminal'),
+    (1016, 'HWH','Netaji Subhas Chandra Bose International Airport', 'Kolkata', 'West Bengal', 'Terminal'),
+    (1017, 'MAS','Chennai International Airport', 'Chennai', 'Tamil Nadu', 'Terminal'),
+    (1018, 'GNC','Sardar Vallabhbhai Patel International Airport', 'Ahmedabad', 'Gujarat', 'Terminal'),
+    (1019, 'MAO','Goa International Airport', 'Goa', 'Goa', 'Terminal'),
+    (1020, 'PUNE','Pune International Airport', 'Pune', 'Maharashtra', 'Terminal'),
+    (1021, 'NZM','Hazrat Nizamuddin Railway Station', 'New Delhi', 'Delhi', 'Junction'),
+    (1022, 'CNB','Kanpur Central', 'Kanpur', 'Uttar Pradesh', 'Junction'),
+    (1023, 'BDTS','Bandra Terminus', 'Mumbai', 'Maharashtra', 'Terminal'),
+    (1024, 'PNBE','Patna Junction', 'Patna', 'Bihar', 'Junction');
+    
+    SELECT *FROM  STATION_DETAILS;
+    
+    -- DELETED RECORDS
+INSERT INTO Station_Details (station_name, city, state, station_type)
+VALUES 
+    ('Chhatrapati Shivaji Maharaj Terminus', 'Mumbai', 'Maharashtra', 'Terminal'),
+    ('Howrah Junction', 'Kolkata', 'West Bengal', 'Junction'),
+    ('Chennai Central', 'Chennai', 'Tamil Nadu', 'Terminal'),
+    ('New Delhi Railway Station', 'New Delhi', 'Delhi', 'Junction'),
+    ('Charbagh Railway Station', 'Lucknow', 'Uttar Pradesh', 'Junction'),
+    ('Pune Junction', 'Pune', 'Maharashtra', 'Junction'),
+    ('Jaipur Junction', 'Jaipur', 'Rajasthan', 'Junction'),
+    ('Howrah Metro Station', 'Kolkata', 'West Bengal', 'Metro'),
+    ('Bangalore City Railway Station', 'Bengaluru', 'Karnataka', 'Terminal'),
+    ('Secunderabad Junction', 'Hyderabad', 'Telangana', 'Junction'),
+    ('Gandhinagar Railway Station', 'Gandhinagar', 'Gujarat', 'Junction'),
+    ('Indira Gandhi International Airport', 'New Delhi', 'Delhi', 'Terminal'),
+    ('Chhatrapati Shivaji International Airport', 'Mumbai', 'Maharashtra', 'Terminal'),
+    ('Kempegowda International Airport', 'Bengaluru', 'Karnataka', 'Terminal'),
+    ('Rajiv Gandhi International Airport', 'Hyderabad', 'Telangana', 'Terminal'),
+    ('Netaji Subhas Chandra Bose International Airport', 'Kolkata', 'West Bengal', 'Terminal'),
+    ('Chennai International Airport', 'Chennai', 'Tamil Nadu', 'Terminal'),
+    ('Sardar Vallabhbhai Patel International Airport', 'Ahmedabad', 'Gujarat', 'Terminal'),
+    ('Goa International Airport', 'Goa', 'Goa', 'Terminal'),
+    ('Pune International Airport', 'Pune', 'Maharashtra', 'Terminal');
+    
+    
+    -- Train table
+CREATE TABLE Train (
+    train_id INT PRIMARY KEY AUTO_INCREMENT,
+    train_name VARCHAR(100) NOT NULL,
+    train_type ENUM('Express', 'Local', 'High-speed', 'Cargo') NOT NULL,
+    capacity INT NOT NULL,
+    starting_station_name VARCHAR(100),
+    ending_station_name VARCHAR(100),
+    CONSTRAINT unique_train_name UNIQUE(train_name)
+);
+DROP TABLE Train;
+CREATE TABLE Route (
+  train_id INT NOT NULL,
+  departure_station_id VARCHAR(255) NOT NULL,
+  arrival_station_id VARCHAR(255) NOT NULL,
+  route_order INT,
+  departure_station_name VARCHAR(255), -- Added attribute for departure station name
+  arrival_station_name VARCHAR(255),   -- Added attribute for arrival station name
+  PRIMARY KEY (train_id, departure_station_id, arrival_station_id),
+  CONSTRAINT fk_train
+    FOREIGN KEY (train_id)
+    REFERENCES Train(train_id),
+  CONSTRAINT fk_departure_station
+    FOREIGN KEY (departure_station_id)
+    REFERENCES Station_Details(station_id),
+  CONSTRAINT fk_arrival_station
+    FOREIGN KEY (arrival_station_id)
+    REFERENCES Station_Details(station_id)
+);
+  DROP TABLE ROUTE;
+  DESC ROUTE;
+  
+INSERT INTO Route (train_id, departure_station_id, arrival_station_id, route_order, departure_station_name, arrival_station_name)
+VALUES 
+    (22101,'CSMT', 'MAS', '[Lokmanyatilak(LTT) -> Madurai Jn (MDU)]', 'Chhatrapati Shivaji Maharaj Terminus', 'Chennai Central'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (16093,'MAS', 'LKO', '[Mgr Chennai Ctr(MAS) -> Lucknow Ne (LJN)]', 'Chennai Central', 'Charbagh Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    (12301,'HWH', 'NDLS', '[Howrah Jn(HWH) -> New Delhi (NDLS)]', 'Howrah Junction', 'New Delhi Railway Station'),
+    
+    
+INSERT INTO Train (train_id, train_name, train_type, capacity)
+VALUES 
+    (101, 'Rajdhani Express', 'Express', 300),
+    (102, 'Shatabdi Express', 'Express', 250),
+    (103, 'Duronto Express', 'Express', 350),
+    (104, 'Gatimaan Express', 'High-speed', 200),
+    (105, 'Tejas Express', 'Express', 300),
+    (106, 'Vande Bharat Express', 'High-speed', 250),
+    (107, 'Garib Rath Express', 'Express', 350),
+    (108, 'Jan Shatabdi Express', 'Express', 250),
+    (109, 'Double Decker Express', 'Express', 300),
+    (110, 'Sampark Kranti Express', 'Express', 350),
+    (111, 'Humsafar Express', 'Express', 300),
+    (112, 'Antyodaya Express', 'Express', 350),
+    (113, 'Uday Express', 'Express', 250),
+    (114, 'Mahamana Express', 'Express', 300),
+    (115, 'Kavi Guru Express', 'Express', 350),
+    (116, 'Yuva Express', 'Express', 250),
+    (117, 'Tatkal Express', 'Express', 300),
+    (118, 'Suvidha Express', 'Express', 350),
+    (119, 'Superfast Express', 'Express', 300),
+    (120, 'Local Passenger', 'Local', 200);
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    CREATE TABLE Schedule (
+    schedule_id INT PRIMARY KEY AUTO_INCREMENT,
+    train_id INT NOT NULL,
+    departure_station_id INT NOT NULL,
+    arrival_station_id INT NOT NULL,
+    departure_time TIME NOT NULL,
+    arrival_time TIME NOT NULL,
+    frequency VARCHAR(100),
+    days_of_operation VARCHAR(100),
+    departure_station_name VARCHAR(255),  -- New column for departure station name
+    arrival_station_name VARCHAR(255),   -- New column for arrival station name
+    CONSTRAINT fk_train
+        FOREIGN KEY (train_id)
+        REFERENCES Trains(train_id),
+    CONSTRAINT fk_departure_station
+        FOREIGN KEY (departure_station_id)
+        REFERENCES Station_Details(station_id),
+    CONSTRAINT fk_arrival_station
+        FOREIGN KEY (arrival_station_id)
+        REFERENCES Station_Details(station_id)
+);
+
+CREATE TABLE Passenger_Details (
+    passenger_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    ticket_id INT NOT NULL,
+    seat_number VARCHAR(20),
+    class ENUM('First Class', 'Second Class', 'Sleeper') NOT NULL,
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES User_Details(user_id),
+    CONSTRAINT fk_ticket
+        FOREIGN KEY (ticket_id)
+        REFERENCES Tickets(ticket_id),
+    CONSTRAINT fk_pnr
+        FOREIGN KEY (pnr_number) -- Foreign key referencing PNR number in Tickets table
+        REFERENCES Tickets(pnr_number)
+);
+
+-- Ticket table
+CREATE TABLE Ticket (
+    ticket_id INT PRIMARY KEY AUTO_INCREMENT,
+    pnr_number VARCHAR(20) UNIQUE,
+    passenger_id INT NOT NULL,
+    route_id INT NOT NULL,
+    seat_number VARCHAR(20),
+    class ENUM('First Class', 'Second Class', 'Sleeper') NOT NULL,
+    status_id INT,
+    cancelation_id INT,
+    CONSTRAINT fk_passenger
+        FOREIGN KEY (passenger_id)
+        REFERENCES Passenger_Details(passenger_id),
+    CONSTRAINT fk_route
+        FOREIGN KEY (route_id)
+        REFERENCES Route(route_id),
+    CONSTRAINT fk_status
+        FOREIGN KEY (status_id)
+        REFERENCES Ticket_Status(status_id),
+    CONSTRAINT fk_cancellation
+        FOREIGN KEY (cancelation_id)
+        REFERENCES Cancellation(cancelation_id)
+);
+
+-- Ticket Status table (Weak entity)
+CREATE TABLE Ticket_Status (
+    status_id INT PRIMARY KEY AUTO_INCREMENT,
+    status_name ENUM('Confirmed', 'RAC', 'Waiting List') NOT NULL
+);
+
+-- Cancellation table (Weak entity)
+CREATE TABLE Cancellation (
+    cancelation_id INT PRIMARY KEY AUTO_INCREMENT,
+    reason TEXT,
+    cancelation_date DATE,
+    refund_amount DECIMAL(10,2),
+    CONSTRAINT fk_ticket
+        FOREIGN KEY (cancelation_id)
+        REFERENCES Ticket(cancelation_id)
+);
+
+-- PL SQL COMMAND
+-- This procedure GetTrainSchedule takes the train name, departure station, and arrival station as input parameters and retrieves the
+-- schedule details for the specified train between the specified stations. It uses PL/SQL constructs such as
+--  variables, SELECT INTO statements, and a cursor loop to retrieve and display the schedule details.
+
+
+CREATE OR REPLACE PROCEDURE GetTrainSchedule(
+    p_train_name IN VARCHAR2,
+    p_departure_station IN VARCHAR2,
+    p_arrival_station IN VARCHAR2
+)
+IS
+    v_train_id Train.train_id%TYPE;
+    v_departure_station_id Station_Details.station_id%TYPE;
+    v_arrival_station_id Station_Details.station_id%TYPE;
+BEGIN
+    -- Get train ID
+    SELECT train_id INTO v_train_id
+    FROM Train
+    WHERE train_name = p_train_name;
+    
+    -- Get departure station ID
+    SELECT station_id INTO v_departure_station_id
+    FROM Station_Details
+    WHERE station_name = p_departure_station;
+    
+    -- Get arrival station ID
+    SELECT station_id INTO v_arrival_station_id
+    FROM Station_Details
+    WHERE station_name = p_arrival_station;
+    
+    -- Retrieve schedule
+    FOR schedule_rec IN (
+        SELECT *
+        FROM Schedule
+        WHERE train_id = v_train_id
+        AND departure_station_id = v_departure_station_id
+        AND arrival_station_id = v_arrival_station_id
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Departure Time: ' || schedule_rec.departure_time || ', Arrival Time: ' || schedule_rec.arrival_time);
+    END LOOP;
+END;
+/
+
+-- CURSOR
+
+DECLARE user_cursor CURSOR FOR
+SELECT user_id, username, password, email, full_name, date_of_birth, address, phone_number, age
+FROM User_Details;
+
+OPEN user_cursor;
+
+FETCH NEXT FROM user_cursor INTO @user_id, @username, @password, @email, @full_name, @date_of_birth, @address, @phone_number, @age;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Process the fetched row data here
+    PRINT 'User ID: ' + CAST(@user_id AS VARCHAR(10)) + ', Username: ' + @username + ', Email: ' + @email;
+
+    FETCH NEXT FROM user_cursor INTO @user_id, @username, @password, @email, @full_name, @date_of_birth, @address, @phone_number, @age;
+END
+
+CLOSE user_cursor;
+DEALLOCATE user_cursor;
+
+-- VIEW
+
+CREATE VIEW Train_Schedule_View AS
+SELECT s.schedule_id, s.train_id, s.departure_station_id, s.arrival_station_id,
+       s.departure_time, s.arrival_time, s.frequency, s.days_of_operation,
+       sd_departure.station_name AS departure_station_name,
+       sd_arrival.station_name AS arrival_station_name
+FROM Schedule s
+JOIN Station_Details sd_departure ON s.departure_station_id = sd_departure.station_id
+JOIN Station_Details sd_arrival ON s.arrival_station_id = sd_arrival.station_id;
+
+-- WORK BOOK EXERCISE 1
+
+-- 1
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'RAILWAY' -- Replace 'RAILWAY' with your database name
+AND table_name = 'table_to_drop'; -- Replace 'table_to_drop' with the name of the table you wanted to drop
+
+-- 2
+ALTER TABLE User_Details COMMENT 'This table stores user information.';
+SHOW CREATE TABLE User_Details;
+
+-- 3
+SELECT DISTINCT table_type
+FROM information_schema.tables
+WHERE table_schema = 'your_database_name'
+AND table_schema = DATABASE();
+
+-- WORKBOOK EXERCISE 5
+
+-- Q1  List the registration dates of users in a format like ‘Monday, January 1, 2020'.
+SELECT full_name,
+       DATE_FORMAT(registration_date, '%W, %M %e, %Y') AS formatted_registration_date
+FROM User_Details;
+
+-- Q2 Display the age of users in years, months, and days.
+SELECT username,
+       TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS years,
+       TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE()) % 12 AS months,
+       FLOOR(TIMESTAMPDIFF(DAY, date_of_birth + INTERVAL TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE()) MONTH, CURDATE())) AS days
+FROM User_Details;
+
+-- Q3 Calculate the next scheduled maintenance date for each train, assuming maintenance is performed every 90 days from the last maintenance.
+SELECT T.train_name,
+       ADDDATE(TM.last_maintenance_date, INTERVAL 90 DAY) AS next_maintenance_date
+FROM Train T
+JOIN Train_Maintenance TM ON T.train_id = TM.train_id;
+
+-- Q4 Ceil(n): Smallest integer greater than or equal to n
+-- Find the number of seats available on trains where the capacity is rounded up to the nearest integer.
+SELECT train_id, train_name, capacity, CEIL(capacity) AS rounded_capacity
+FROM Train;
+
+-- Q5 Cos(n): Cosine of n
+-- Query to Calculate the cosine of the angle (in degrees) between the departure and arrival stations for each route.
+SELECT train_id, departure_station_name, arrival_station_name,
+       COS(route_order * (PI() / 180)) AS cosine_angle
+FROM Route;
+
+-- Q6 Exp(n): e^n
+-- Query to Calculate the estimated number of passengers after a 10% increase in passenger traffic
+SELECT train_id, train_name, capacity, EXP(LOG(capacity) + LOG(1.1)) AS estimated_passenger_count
+FROM Train;
+
+-- Q7 Sqrt(n): Square root of n
+-- Query to Find the length of the route for each train, assuming it's the square root of the sum of the squares of the distances between consecutive stations.
+SELECT train_id, train_name,
+       SQRT(SUM(POWER(distance, 2))) AS route_length
+FROM Route
+GROUP BY train_id, train_name;
+
+-- Q8 NVL(exp1, exp2): Returns exp1 if not null, otherwise returns exp2.
+-- Query: Display the names of stations and their terminal type. If a station doesn't have a specified type, assume it's a regular station.
+SELECT station_name, NVL(station_type, 'Regular') AS terminal_type
+FROM Station_Details;
+
+-- Q9 AVG: Average value of a set
+-- Query: Calculate the average capacity of trains.
+SELECT AVG(capacity) AS average_capacity
+FROM Train;
+
+-- Q10 COUNT: Number of non-null values
+-- Query: Count the number of tickets booked by each user.
+SELECT user_id, COUNT(ticket_id) AS num_tickets_booked
+FROM Passenger_Details
+GROUP BY user_id;
+
+-- Q11 MAX: Maximum of a set
+-- Query: Find the maximum distance between two consecutive stations on any route.
+SELECT MAX(distance) AS max_distance
+FROM Route;
+
+-- Q12 MIN: Minimum of a set
+-- Query: Find the minimum age of users.
+SELECT MIN(age) AS min_age
+FROM User_Details;
+
+-- Q13 SUM: Sum of a set
+-- Query: Calculate the total number of seats across all trains.
+SELECT SUM(capacity) AS total_seats
+FROM Train;
+
+-- Q14 What are the total, maximum, minimum, and average salaries of employees based on their job roles within department 20?
+-- Display only those job roles where the average salary exceeds $1000.
+
+
+
+-- WORKBOOK EXERCISE 6
+
+--  Find All Trains and Their Next Departure Times from a Specific Station
+SELECT 
+    T.train_id,
+    T.train_name,
+    SD.station_name AS departure_station,
+    S.departure_time
+FROM 
+    Train T
+LEFT JOIN Schedule S ON T.train_id = S.train_id
+LEFT JOIN Station_Details SD ON S.departure_station_id = SD.station_id
+WHERE 
+    SD.station_name = 'Central Station' OR SD.station_name IS NULL
+ORDER BY 
+    S.departure_time ASC;
+
+
+-- Scenario: Common Passengers Between Two Trains
+SELECT DISTINCT pd1.user_id
+FROM Passenger_Details pd1
+INNER JOIN Ticket t1 ON pd1.ticket_id = t1.ticket_id
+WHERE t1.train_id = X -- The ID of the first train
+
+AND pd1.user_id IN (
+  SELECT pd2.user_id
+  FROM Passenger_Details pd2
+  INNER JOIN Ticket t2 ON pd2.ticket_id = t2.ticket_id
+  WHERE t2.train_id = Y -- The ID of the second train
+);
+
+
+-- Example INNER JOIN to retrieve the schedule details along with train names
+SELECT Train.train_name, Schedule.departure_time, Schedule.arrival_time
+FROM Train
+INNER JOIN Schedule ON Train.train_id = Schedule.train_id;
+
+-- Example SELF JOIN to find routes where departure and arrival stations are the same
+SELECT A.train_id, A.departure_station_name, A.arrival_station_name
+FROM Schedule A
+INNER JOIN Schedule B ON A.train_id = B.train_id
+WHERE A.departure_station_name = B.arrival_station_name;
+
+-- Example CROSS JOIN to get all combinations of station names and train names
+SELECT Station_Details.station_name, Train.train_name
+FROM Station_Details
+CROSS JOIN Train;
