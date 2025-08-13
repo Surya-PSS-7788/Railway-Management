@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Book Ticket</title>
+ <link rel="stylesheet"
+ href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ </head>
+ 
+<body>
+ <div class="container">
+ <h1 class="mt-5">Book Ticket</h1>
+ <form id="bookTicketForm" action="{{ url_for('book_ticket') }}" method="post">
+ <div class="form-group">
+ <label for="train_name">Select Train:</label>
+ <select class="form-control" id="train_name" name="train_name" required>
+ <option value="">Select Train</option>
+ {%for train in available_trains %}
+ <option value="{{ train[1] }}">{{ train[1] }}</option>
+ {%endfor %}
+ </select>
+ </div>
+ <div class="form-group">
+ <label for="passenger_name">Passenger Name:</label>
+ <input type="text" class="form-control" id="passenger_name"
+ name="passenger_name" required>
+ </div>
+ <button type="submit" class="btn btn-primary">Book Ticket</button>
+ </form>
+ </div>
+ </body>
+ </html>
+ 
